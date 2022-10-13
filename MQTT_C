@@ -1,0 +1,56 @@
+#include <WiFi.h>
+#include <PubSubClient.h>
+
+const char* ssid = "Wokwi-GUEST";
+const char* senha = "";
+
+int porta = 1883;
+const char* server = "broker.hivemq.com";
+const char* topico = "senai_sa3_andreicardosomarcelina";
+
+
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
+
+void setup() {
+ Serial.begin(115200);
+ Serial.println("Inciando Setup.");
+
+ WiFi.begin(ssid, senha);
+ while( WiFi.status() != WL_CONNECTED){
+  delay(500);
+  Serial.print(".");
+
+ }
+  //Conexão com o WiFi.
+  Serial.println("Conectando a rede WiFi");
+  
+  //Conexão com broker.
+  Serial.println("Conectando ao Broker");
+  mqttClient.setServer(server, porta);
+  char* clientId = "mugiwaraonepiecex_cp9";
+
+  mqttClient.connect(clientId);
+  mqttClient.subscribe(topico);
+
+  while( !mqttClient.connected() ){
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("Broker conectado");
+
+}
+
+void loop() {
+
+  int msg = mqttClient.publish(topico, "{\"temperatura\": 35, \"umidade\": 53}");
+  if(!msg){
+    Serial.println("Problemas ao enviar mensagem");
+    mqttClient.connect("mugiwaraonepiecex_cp9");
+    mqttClient.subscribe(topico);
+  } else {
+    Serial.println("Mensagem enviada com sucesso");
+  }
+  delay(3000);
+
+}
