@@ -1,0 +1,4 @@
+//Utilizado para acessar o hivemMQ broker MQTT.
+//Tive uma certa dificuldade de entender a parte de integração do código para enviar para um broker.
+//Achei interessante a integração do JSON para utilizar neste código em C.
+//Link utilizado para usar o MQTT: http://www.hivemq.com/
